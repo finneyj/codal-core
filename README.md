@@ -81,7 +81,7 @@ If you would like to override or define any additional configuration options (`#
 }
 ```
 
-The above example will be translate `"NUMBER_ONE":1` into: `#define NUMBER_ONE     1` and force include it during compilation. You can also specify alternate application or output folders.
+The above example will translate `"NUMBER_ONE":1` into: `#define NUMBER_ONE     1` and force include it during compilation. You can also specify alternate application or output folders.
 
 # Targets
 
