@@ -72,6 +72,8 @@ if len(args) == 1:
     target_name = args[0]
     target_config = None
 
+    url = re.match(r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', target_name)
+
     # list all targets
     if target_name == "ls":
         for json_obj in test_json:
@@ -80,28 +82,28 @@ if len(args) == 1:
                 s += "(%s)" % json_obj["device_url"]
             print(s)
         exit(0)
-
-    # cycle through out targets and check for a match
-    for json_obj in test_json:
-        if json_obj["name"] != target_name:
-            continue
-
-        del json_obj["device_url"]
-        del json_obj["info"]
-
-        target_config = json_obj
-        break
-
-    if target_config == None and target_name.startswith("http"):
+    elif url:
+        # assume url is correct and set target config
         target_config = {
             "name": re.sub("^.*/", "", target_name),
             "url": target_name,
             "branch": "master",
             "type": "git"
         }
+    else:
+        # cycle through out targets and check for a match
+        for json_obj in test_json:
+            if json_obj["name"] != target_name:
+                continue
+
+            del json_obj["device_url"]
+            del json_obj["info"]
+
+            target_config = json_obj
+            break
 
     if target_config == None:
-        print("'" + target_name + "'" + " is not a valid target.")
+        print("'" + target_name + "'" + " is not a valid target. Is the URL or target name correct?\r\n(\"python build.py ls\" lists pre-defined codal targets)")
         exit(1)
 
     # developer mode is for users who wish to contribute, it will clone and checkout commitable branches.
